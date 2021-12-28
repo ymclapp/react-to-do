@@ -1,6 +1,6 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+
 
 function Todo({ todo }) {
   return (
@@ -10,14 +10,42 @@ function Todo({ todo }) {
   );
 };
 
+function TodoForm({ addTodo }) {
+  const [value, setValue] = useState("");
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if(!value) return;
+    addTodo(value);
+    setValue("");
+  };
+
+  return (
+    <form onSubmit={ handleSubmit }>
+      <input
+      type="text"
+      className="input"
+      value={ value }
+      onChange={ e => setValue(e.target.value)}
+      />
+    </form>
+  );
+}
+
 function App() {
   const [todos, setTodos] = React.useState([
     //The first parameter, todos, is what you are going to name your state
     //The second parameter, setTodos, is what you are going to use to set the state
     { text: "Learn about React" },
     { text: "Meet friend for lunch" },
-    { text: "Build really cool todo app" }
+    { text: "Build really cool todo app" },
+    { text:  "Add a New Item" }
   ]);
+
+  const addTodo = text => {
+    const newTodos = [...todos, { text }];
+    setTodos(newTodos);
+  };
 
   return (
     <div className="app">
@@ -29,6 +57,7 @@ function App() {
             todo={todo}
           />
         ))}
+        <TodoForm addTodo={ addTodo }/>
       </div>
     </div>
   );
