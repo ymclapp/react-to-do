@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import './App.css';
 
 
-function Todo({ todo }) {
+function Todo({ todo, index, completeTodo }) {
   return (
-    <div className="todo">
+    <div 
+    className="todo"
+    style={{ textDecoration:  todo.isCompleted ? "line-through" : "" }}
+    >
       {todo.text}
+      <div>
+        <button onClick={() => completeTodo(index)}>Complete</button>
+      </div>
     </div>
   );
 };
@@ -15,18 +21,19 @@ function TodoForm({ addTodo }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if(!value) return;
+    if (!value) return;
     addTodo(value);
     setValue("");
   };
 
   return (
-    <form onSubmit={ handleSubmit }>
+    <form onSubmit={handleSubmit}>
       <input
-      type="text"
-      className="input"
-      value={ value }
-      onChange={ e => setValue(e.target.value)}
+        type="text"
+        className="input"
+        value={value}
+        placeholder="Add a New Item"
+        onChange={e => setValue(e.target.value)}
       />
     </form>
   );
@@ -36,14 +43,28 @@ function App() {
   const [todos, setTodos] = React.useState([
     //The first parameter, todos, is what you are going to name your state
     //The second parameter, setTodos, is what you are going to use to set the state
-    { text: "Learn about React" },
-    { text: "Meet friend for lunch" },
-    { text: "Build really cool todo app" },
-    { text:  "Add a New Item" }
+    {
+      text: "Learn about React",
+      isCompleted: false
+    },
+    {
+      text: "Meet friend for lunch",
+      isCompleted: false
+    },
+    {
+      text: "Build really cool todo app",
+      isCompleted: false
+    }
   ]);
 
   const addTodo = text => {
     const newTodos = [...todos, { text }];
+    setTodos(newTodos);
+  };
+
+  const completeTodo = index => {
+    const newTodos = [...todos];
+    newTodos[index].isCompleted = true;
     setTodos(newTodos);
   };
 
@@ -55,9 +76,10 @@ function App() {
             key={index}
             index={index}
             todo={todo}
+            completeTodo={ completeTodo }
           />
         ))}
-        <TodoForm addTodo={ addTodo }/>
+        <TodoForm addTodo={addTodo} />
       </div>
     </div>
   );
